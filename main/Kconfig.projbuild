@@ -100,6 +100,9 @@ choice BOARD_TYPE
     config BOARD_TYPE_ESP_SPOT_S3
         bool "ESP-Spot-S3"
         depends on IDF_TARGET_ESP32S3
+    config BOARD_TYPE_ESP_SPOT_S3_XIAOTAO
+        bool "ESP-Spot-S3-XiaoTao"
+        depends on IDF_TARGET_ESP32S3
     config BOARD_TYPE_ESP_HI
         bool "ESP-HI"
         depends on IDF_TARGET_ESP32C3
