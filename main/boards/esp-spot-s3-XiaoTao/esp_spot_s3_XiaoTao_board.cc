@@ -28,11 +28,13 @@ private:
     i2c_master_bus_handle_t i2c_bus_;
     Button boot_button_;
     Button key_button_;
+    Button ext_key_button_;
     adc_oneshot_unit_handle_t adc1_handle;
     adc_cali_handle_t adc1_cali_handle;
     bool do_calibration = false;
     bool key_long_pressed = false;
     int64_t last_key_press_time = 0;
+    int64_t last_ext_key_press_time = 0;
     static const int64_t LONG_PRESS_TIMEOUT_US = 5 * 1000000ULL;
 
     void InitializeI2c() {
@@ -119,6 +121,25 @@ private:
                 BlinkGreenFor5s();
             }
         });
+
+        ext_key_button_.OnClick([this]() {
+            auto& app = Application::GetInstance();
+            app.ToggleChatState();
+
+        });
+
+        ext_key_button_.OnLongPress([this]() {
+            int64_t now = esp_timer_get_time();
+            auto& app = Application::GetInstance();
+
+            if ((now - last_ext_key_press_time) > LONG_PRESS_TIMEOUT_US) {
+                ESP_LOGW(TAG, "Ext key button long pressed the second time within 5s, wifi reset...");
+                ResetWifiConfiguration();
+            } else {
+                last_ext_key_press_time = now;
+            }
+        });
+
     }
 
     void InitializePowerCtl() {
@@ -188,7 +209,7 @@ private:
     }
 
 public:
-    EspSpotS3Bot() : boot_button_(BOOT_BUTTON_GPIO), key_button_(KEY_BUTTON_GPIO, true) {
+    EspSpotS3Bot() : boot_button_(BOOT_BUTTON_GPIO), key_button_(KEY_BUTTON_GPIO, true), ext_key_button_(EXT_KEY_BUTTON_GPIO) {
         InitializePowerCtl();
         InitializeADC();
         InitializeI2c();
