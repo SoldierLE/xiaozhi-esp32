@@ -1,5 +1,6 @@
 #include "wifi_board.h"
 #include "codecs/es8311_audio_codec.h"
+#include "codecs/no_audio_input_es8311_audio_output_codec.h"
 #include "application.h"
 #include "button.h"
 #include "config.h"
@@ -228,6 +229,19 @@ public:
             AUDIO_CODEC_ES8311_ADDR, false);
         return &audio_codec;
     }
+
+    // virtual AudioCodec* GetAudioCodec() override {
+    //     //ESP_LOGI(TAG, "Config sample rates: input=%d, output=%d", AUDIO_INPUT_SAMPLE_RATE, AUDIO_OUTPUT_SAMPLE_RATE);
+    //     // 使用NoAudioInputEs8311AudioOutputCodec：INMP441输入 + ES8311输出
+    //     static NoAudioInputEs8311AudioOutputCodec audio_codec(i2c_bus_, I2C_NUM_0,
+    //         AUDIO_INPUT_SAMPLE_RATE, AUDIO_OUTPUT_SAMPLE_RATE, 
+    //         AUDIO_I2S_GPIO_MCLK, AUDIO_I2S_GPIO_BCLK, AUDIO_I2S_GPIO_WS,
+    //         AUDIO_I2S_GPIO_DOUT, AUDIO_CODEC_PA_PIN, AUDIO_CODEC_ES8311_ADDR, false, false,
+    //         // INMP441专用GPIO
+    //         AUDIO_I2S_MIC_GPIO_SCK, AUDIO_I2S_MIC_GPIO_WS, AUDIO_I2S_MIC_GPIO_DIN);
+    //     return &audio_codec;
+    // }
+
 
     virtual bool GetBatteryLevel(int &level, bool &charging, bool &discharging) {
         if (!adc1_handle) {
